@@ -1,34 +1,55 @@
-let currentQuestion = 0;
 let currentQuiz = [];
+let currentQuestion = 0;
+let score = 0;
 
-function startQuiz(level){
+function startQuiz(level) {
 
     currentQuiz = quizData.filter(
         q => q.level === level
     );
 
+    shuffle(currentQuiz);
+
     currentQuestion = 0;
+    score = 0;
 
     showQuestion();
 }
 
-function showQuestion(){
+function shuffle(array) {
+
+    for (let i = array.length - 1; i > 0; i--) {
+
+        const j =
+        Math.floor(
+            Math.random() * (i + 1)
+        );
+
+        [array[i], array[j]] =
+        [array[j], array[i]];
+    }
+
+    return array;
+}
+
+function showQuestion() {
 
     const q =
-        currentQuiz[currentQuestion];
+    currentQuiz[currentQuestion];
 
     document.querySelector(".app").innerHTML = `
 
     <div class="quiz-card">
 
         <h2>
-        問題 ${currentQuestion + 1}
-        /
-        ${currentQuiz.length}
+            問題 ${currentQuestion + 1}
+            / ${currentQuiz.length}
         </h2>
 
+        img/signs/${q.image}
+
         <h3>
-        この標識の意味は？
+            この標識の意味は？
         </h3>
 
         <div id="choices"></div>
@@ -39,109 +60,184 @@ function showQuestion(){
     `;
 
     const choicesDiv =
-        document.getElementById("choices");
+    document.getElementById("choices");
 
-    q.choices.forEach(choice => {
+    const shuffledChoices =
+    shuffle([...q.choices]);
+
+    shuffledChoices.forEach(choice => {
 
         const btn =
-            document.createElement("button");
+        document.createElement("button");
 
         btn.className =
-            "answer-btn";
+        "answer-btn";
 
         btn.textContent =
-            choice;
+        choice;
 
-        btn.onclick = () => {
-
-            checkAnswer(choice);
-
-        };
+        btn.onclick =
+        () => checkAnswer(choice);
 
         choicesDiv.appendChild(btn);
-
     });
-
 }
 
-function checkAnswer(answer){
+function checkAnswer(answer) {
 
     const q =
-        currentQuiz[currentQuestion];
+    currentQuiz[currentQuestion];
 
     const result =
-        document.getElementById("result");
+    document.getElementById("result");
 
-    if(answer === q.answer){
+    const buttons =
+    document.querySelectorAll(".answer-btn");
 
-        result.innerHTML =
-        `
-        <p style="color:#22c55e;">
-        ✅ 正解
-        </p>
+    buttons.forEach(btn => {
+        btn.disabled = true;
+    });
 
-        <p>
-        ${q.explanation}
-        </p>
+    if (answer === q.answer) {
+
+        score++;
+
+        result.innerHTML = `
+
+        <div class="correct-box">
+
+            <h3>✅ 正解</h3>
+
+            <p>
+            ${q.explanation}
+            </p>
+
+            <button
+             class="next-btn"
+             onclick="nextQuestion()">
+
+             次の問題へ
+
+            </button>
+
+        </div>
+
         `;
 
-    }else{
+    } else {
 
-        result.innerHTML =
-        `
-        <p style="color:#ef4444;">
-        ❌ 不正解
-        </p>
+        result.innerHTML = `
 
-        <p>
-        正解：${q.answer}
-        </p>
+        <div class="wrong-box">
 
-        <p>
-        ${q.explanation}
-        </p>
+            <h3>❌ 不正解</h3>
+
+            <p>
+            正解：
+            <strong>
+                ${q.answer}
+            </strong>
+            </p>
+
+            <p>
+            ${q.explanation}
+            </p>
+
+            <button
+             class="next-btn"
+             onclick="nextQuestion()">
+
+             次の問題へ
+
+            </button>
+
+        </div>
+
         `;
     }
-
-    setTimeout(() => {
-
-        currentQuestion++;
-
-        if(
-            currentQuestion <
-            currentQuiz.length
-        ){
-
-            showQuestion();
-
-        }else{
-
-            finishQuiz();
-
-        }
-
-    }, 2000);
-
 }
 
-function finishQuiz(){
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if (
+        currentQuestion >=
+        currentQuiz.length
+    ) {
+
+        showResult();
+        return;
+    }
+
+    showQuestion();
+}
+
+function showResult() {
+
+    const percent =
+    Math.round(
+        score /
+        currentQuiz.length
+        * 100
+    );
+
+    let rank = "C";
+    let message = "もう少し頑張りましょう！";
+
+    if (percent >= 95) {
+
+        rank = "S";
+        message = "素晴らしい！完璧です！";
+
+    } else if (percent >= 85) {
+
+        rank = "A";
+        message = "とても良くできました！";
+
+    } else if (percent >= 70) {
+
+        rank = "B";
+        message = "合格レベルです！";
+    }
 
     document.querySelector(".app").innerHTML = `
 
     <div class="quiz-card">
 
         <h1>
-        🎉
+        🏆 結果発表
         </h1>
 
         <h2>
-        クイズ終了
+        ${score}
+        /
+        ${currentQuiz.length}
+        問正解
         </h2>
 
-        <button onclick="location.reload()">
-        ホームへ戻る
+        <h2>
+        正答率
+        ${percent}%
+        </h2>
+
+        <h1>
+        ランク ${rank}
+        </h1>
+
+        <p>
+        ${message}
+        </p>
+
+        <button
+          class="next-btn"
+          onclick="location.reload()">
+
+          ホームへ戻る
+
         </button>
 
     </div>
+
     `;
 }
