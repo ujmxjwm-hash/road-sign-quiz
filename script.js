@@ -2,9 +2,10 @@ let currentQuiz = [];
 let currentQuestion = 0;
 let score = 0;
 
-function startQuiz(level) {
+function startQuiz(level){
 
-    currentQuiz = quizData.filter(
+    currentQuiz =
+    quizData.filter(
         q => q.level === level
     );
 
@@ -16,9 +17,9 @@ function startQuiz(level) {
     showQuestion();
 }
 
-function shuffle(array) {
+function shuffle(array){
 
-    for (let i = array.length - 1; i > 0; i--) {
+    for(let i = array.length - 1; i > 0; i--){
 
         const j =
         Math.floor(
@@ -32,7 +33,7 @@ function shuffle(array) {
     return array;
 }
 
-function showQuestion() {
+function showQuestion(){
 
     const q =
     currentQuiz[currentQuestion];
@@ -41,24 +42,39 @@ function showQuestion() {
 
     <div class="quiz-card">
 
-        <h2>
-        問題 ${currentQuestion + 1}
-        / ${currentQuiz.length}
-        </h2>
+        <div class="question-number">
+            問題 ${currentQuestion + 1}
+            / ${currentQuiz.length}
+        </div>
 
         <img
             src="img/signs/${q.image}"
             alt="${q.answer}"
-            class="sign-image"
-        >
+            class="sign-image">
 
         <h3>
-        この標識の意味は？
+            この標識の意味は？
         </h3>
 
         <div id="choices"></div>
 
         <div id="result"></div>
+
+        <button
+            class="skip-btn"
+            onclick="showAnswer()">
+
+            ❓ わからない
+
+        </button>
+
+        <button
+            class="home-btn"
+            onclick="goHome()">
+
+            🏠 タイトルへ戻る
+
+        </button>
 
     </div>
     `;
@@ -69,7 +85,7 @@ function showQuestion() {
     const shuffledChoices =
     shuffle([...q.choices]);
 
-    shuffledChoices.forEach(choice => {
+    shuffledChoices.forEach(choice=>{
 
         const btn =
         document.createElement("button");
@@ -81,27 +97,30 @@ function showQuestion() {
         choice;
 
         btn.onclick =
-        () => checkAnswer(choice);
+        ()=>checkAnswer(choice);
 
         choicesDiv.appendChild(btn);
 
     });
+
 }
 
-function checkAnswer(answer) {
+function checkAnswer(answer){
 
     const q =
     currentQuiz[currentQuestion];
 
-    const result =
-    document.getElementById("result");
-
     const buttons =
-    document.querySelectorAll(".answer-btn");
+    document.querySelectorAll(
+        ".answer-btn"
+    );
 
-    buttons.forEach(btn => {
+    buttons.forEach(btn=>{
         btn.disabled = true;
     });
+
+    const result =
+    document.getElementById("result");
 
     if(answer === q.answer){
 
@@ -131,7 +150,7 @@ function checkAnswer(answer) {
 
         `;
 
-    } else {
+    }else{
 
         result.innerHTML = `
 
@@ -166,7 +185,54 @@ function checkAnswer(answer) {
     }
 }
 
-function nextQuestion() {
+function showAnswer(){
+
+    const q =
+    currentQuiz[currentQuestion];
+
+    const buttons =
+    document.querySelectorAll(
+        ".answer-btn"
+    );
+
+    buttons.forEach(btn=>{
+        btn.disabled = true;
+    });
+
+    document.getElementById("result")
+    .innerHTML = `
+
+    <div class="wrong-box">
+
+        <h3>
+        ❓ わからない
+        </h3>
+
+        <p>
+        正解：
+        <strong>
+        ${q.answer}
+        </strong>
+        </p>
+
+        <p>
+        ${q.explanation}
+        </p>
+
+        <button
+            class="next-btn"
+            onclick="nextQuestion()">
+
+            次の問題へ
+
+        </button>
+
+    </div>
+
+    `;
+}
+
+function nextQuestion(){
 
     currentQuestion++;
 
@@ -176,15 +242,13 @@ function nextQuestion() {
     ){
 
         showResult();
-
         return;
     }
 
     showQuestion();
-
 }
 
-function showResult() {
+function showResult(){
 
     const percent =
     Math.round(
@@ -201,22 +265,23 @@ function showResult() {
 
         rank = "S";
         message =
-        "素晴らしい！";
+        "素晴らしい！完璧です！";
 
-    } else if(percent >= 85){
+    }else if(percent >= 85){
 
         rank = "A";
         message =
-        "とても良くできました";
+        "とても良くできました！";
 
-    } else if(percent >= 70){
+    }else if(percent >= 70){
 
         rank = "B";
         message =
-        "合格レベルです";
+        "合格レベルです！";
     }
 
-    document.querySelector(".app").innerHTML = `
+    document.querySelector(".app")
+    .innerHTML = `
 
     <div class="quiz-card">
 
@@ -224,20 +289,22 @@ function showResult() {
         🏆 結果発表
         </h1>
 
-        <h2>
-        ${score}
-        /
-        ${currentQuiz.length}
-        問正解
-        </h2>
+        <div class="result-rank">
+        ${rank}
+        </div>
+
+        <div class="result-score">
+
+            ${score}
+            /
+            ${currentQuiz.length}
+
+        </div>
 
         <h2>
-        正答率 ${percent}%
+        正答率
+        ${percent}%
         </h2>
-
-        <h1>
-        ランク ${rank}
-        </h1>
 
         <p>
         ${message}
@@ -254,4 +321,9 @@ function showResult() {
     </div>
 
     `;
+}
+
+function goHome(){
+
+    location.reload();
 }
