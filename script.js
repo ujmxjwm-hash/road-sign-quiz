@@ -2,12 +2,12 @@ let currentQuiz = [];
 let currentQuestion = 0;
 let score = 0;
 
-function startQuiz(level){
+function startQuiz(level) {
 
     currentQuiz =
-    quizData.filter(
-        q => q.level === level
-    );
+        quizData.filter(
+            q => q.level === level
+        );
 
     shuffle(currentQuiz);
 
@@ -17,14 +17,14 @@ function startQuiz(level){
     showQuestion();
 }
 
-function shuffle(array){
+function shuffle(array) {
 
-    for(let i = array.length - 1; i > 0; i--){
+    for (let i = array.length - 1; i > 0; i--) {
 
         const j =
-        Math.floor(
-            Math.random() * (i + 1)
-        );
+            Math.floor(
+                Math.random() * (i + 1)
+            );
 
         [array[i], array[j]] =
         [array[j], array[i]];
@@ -33,18 +33,35 @@ function shuffle(array){
     return array;
 }
 
-function showQuestion(){
+function showQuestion() {
 
     const q =
-    currentQuiz[currentQuestion];
+        currentQuiz[currentQuestion];
+
+    const progress =
+        Math.round(
+            ((currentQuestion + 1) /
+            currentQuiz.length) * 100
+        );
 
     document.querySelector(".app").innerHTML = `
 
     <div class="quiz-card">
 
         <div class="question-number">
+
             問題 ${currentQuestion + 1}
             / ${currentQuiz.length}
+
+        </div>
+
+        <div class="progress">
+
+            <div
+                class="progress-fill"
+                style="width:${progress}%">
+            </div>
+
         </div>
 
         <img
@@ -53,7 +70,9 @@ function showQuestion(){
             class="sign-image">
 
         <h3>
+
             この標識の意味は？
+
         </h3>
 
         <div id="choices"></div>
@@ -80,49 +99,48 @@ function showQuestion(){
     `;
 
     const choicesDiv =
-    document.getElementById("choices");
+        document.getElementById(
+            "choices"
+        );
 
     const shuffledChoices =
-    shuffle([...q.choices]);
+        shuffle([...q.choices]);
 
-    shuffledChoices.forEach(choice=>{
+    shuffledChoices.forEach(choice => {
 
         const btn =
-        document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
         btn.className =
-        "answer-btn";
+            "answer-btn";
 
         btn.textContent =
-        choice;
+            choice;
 
-        btn.onclick =
-        ()=>checkAnswer(choice);
+        btn.onclick = () =>
+            checkAnswer(choice);
 
         choicesDiv.appendChild(btn);
-
     });
-
 }
 
-function checkAnswer(answer){
+function checkAnswer(answer) {
 
     const q =
-    currentQuiz[currentQuestion];
+        currentQuiz[currentQuestion];
 
-    const buttons =
-    document.querySelectorAll(
-        ".answer-btn"
-    );
-
-    buttons.forEach(btn=>{
-        btn.disabled = true;
-    });
+    disableButtons();
 
     const result =
-    document.getElementById("result");
+        document.getElementById(
+            "result"
+        );
 
-    if(answer === q.answer){
+    if (
+        answer === q.answer
+    ) {
 
         score++;
 
@@ -150,7 +168,7 @@ function checkAnswer(answer){
 
         `;
 
-    }else{
+    } else {
 
         result.innerHTML = `
 
@@ -161,10 +179,12 @@ function checkAnswer(answer){
             </h3>
 
             <p>
+
             正解：
             <strong>
             ${q.answer}
             </strong>
+
             </p>
 
             <p>
@@ -185,22 +205,16 @@ function checkAnswer(answer){
     }
 }
 
-function showAnswer(){
+function showAnswer() {
 
     const q =
-    currentQuiz[currentQuestion];
+        currentQuiz[currentQuestion];
 
-    const buttons =
-    document.querySelectorAll(
-        ".answer-btn"
-    );
+    disableButtons();
 
-    buttons.forEach(btn=>{
-        btn.disabled = true;
-    });
-
-    document.getElementById("result")
-    .innerHTML = `
+    document.getElementById(
+        "result"
+    ).innerHTML = `
 
     <div class="wrong-box">
 
@@ -209,10 +223,12 @@ function showAnswer(){
         </h3>
 
         <p>
+
         正解：
         <strong>
         ${q.answer}
         </strong>
+
         </p>
 
         <p>
@@ -232,65 +248,93 @@ function showAnswer(){
     `;
 }
 
-function nextQuestion(){
+function disableButtons() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".answer-btn"
+        );
+
+    buttons.forEach(btn => {
+
+        btn.disabled = true;
+
+    });
+}
+
+function nextQuestion() {
 
     currentQuestion++;
 
-    if(
+    if (
         currentQuestion >=
         currentQuiz.length
-    ){
+    ) {
 
         showResult();
+
         return;
     }
 
     showQuestion();
 }
 
-function showResult(){
+function showResult() {
 
     const percent =
-    Math.round(
-        score /
-        currentQuiz.length
-        * 100
-    );
+        Math.round(
+            score /
+            currentQuiz.length * 100
+        );
 
     let rank = "C";
     let message =
-    "もう少し頑張りましょう";
+        "もう少し頑張りましょう";
 
-    if(percent >= 95){
+    if (
+        percent >= 95
+    ) {
 
         rank = "S";
+
         message =
         "素晴らしい！完璧です！";
 
-    }else if(percent >= 85){
+    } else if (
+        percent >= 85
+    ) {
 
         rank = "A";
+
         message =
         "とても良くできました！";
 
-    }else if(percent >= 70){
+    } else if (
+        percent >= 70
+    ) {
 
         rank = "B";
+
         message =
         "合格レベルです！";
     }
 
-    document.querySelector(".app")
-    .innerHTML = `
+    document.querySelector(
+        ".app"
+    ).innerHTML = `
 
     <div class="quiz-card">
 
         <h1>
+
         🏆 結果発表
+
         </h1>
 
         <div class="result-rank">
-        ${rank}
+
+            ${rank}
+
         </div>
 
         <div class="result-score">
@@ -302,12 +346,16 @@ function showResult(){
         </div>
 
         <h2>
-        正答率
-        ${percent}%
+
+            正答率
+            ${percent}%
+
         </h2>
 
         <p>
-        ${message}
+
+            ${message}
+
         </p>
 
         <button
@@ -323,7 +371,14 @@ function showResult(){
     `;
 }
 
-function goHome(){
+function goHome() {
 
-    location.reload();
+    if (
+        confirm(
+            "タイトルへ戻りますか？"
+        )
+    ) {
+
+        location.reload();
+    }
 }
