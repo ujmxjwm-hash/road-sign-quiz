@@ -5,8 +5,9 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>
 道路標識マスター
@@ -25,7 +26,7 @@ href="style.css">
 <header>
 
 <h1>
-🚗道路標識マスター
+🚗 道路標識マスター
 </h1>
 
 </header>
@@ -33,15 +34,21 @@ href="style.css">
 <div class="stats">
 
 <div class="stat">
-🔥12日
+🔥
+<br>
+学習中
 </div>
 
 <div class="stat">
-🎯85%
+🎯
+<br>
+チャレンジ
 </div>
 
 <div class="stat">
-🏆S
+🏆
+<br>
+標識マスター
 </div>
 
 </div>
@@ -49,27 +56,33 @@ href="style.css">
 <div class="menu">
 
 <button onclick="startQuiz('初級')">
-📘初級
+📘<br>
+初級
 </button>
 
 <button onclick="startQuiz('中級')">
-📗中級
+📗<br>
+中級
 </button>
 
 <button onclick="startQuiz('上級')">
-📕上級
+📕<br>
+上級
 </button>
 
-<button>
-📝模試
+<button onclick="startExam()">
+📝<br>
+模擬試験
 </button>
 
-<button>
-❌苦手
+<button onclick="showWeakQuestions()">
+❌<br>
+苦手問題
 </button>
 
-<button>
-📊成績
+<button onclick="showScore()">
+📊<br>
+成績
 </button>
 
 </div>
@@ -80,4 +93,5 @@ href="style.css">
 <script src="script.js"></script>
 
 </body>
+
 </html>
