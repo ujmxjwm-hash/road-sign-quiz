@@ -2,12 +2,12 @@ let currentQuiz = [];
 let currentQuestion = 0;
 let score = 0;
 
-function startQuiz(level) {
+function startQuiz(level){
 
     currentQuiz =
-        quizData.filter(
-            q => q.level === level
-        );
+    quizData.filter(
+        q => q.level === level
+    );
 
     shuffle(currentQuiz);
 
@@ -17,14 +17,32 @@ function startQuiz(level) {
     showQuestion();
 }
 
-function shuffle(array) {
+function startExam(){
 
-    for (let i = array.length - 1; i > 0; i--) {
+    currentQuiz =
+    shuffle(
+        [...quizData]
+    ).slice(0,20);
+
+    currentQuestion = 0;
+    score = 0;
+
+    showQuestion();
+}
+
+function shuffle(array){
+
+    for(
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ){
 
         const j =
-            Math.floor(
-                Math.random() * (i + 1)
-            );
+        Math.floor(
+            Math.random() *
+            (i + 1)
+        );
 
         [array[i], array[j]] =
         [array[j], array[i]];
@@ -33,41 +51,47 @@ function shuffle(array) {
     return array;
 }
 
-function showQuestion() {
+function showQuestion(){
 
     const q =
-        currentQuiz[currentQuestion];
+    currentQuiz[currentQuestion];
 
     const progress =
-        Math.round(
-            ((currentQuestion + 1) /
-            currentQuiz.length) * 100
-        );
+    (
+        (currentQuestion + 1)
+        /
+        currentQuiz.length
+    ) * 100;
 
-    document.querySelector(".app").innerHTML = `
+    document.querySelector(
+        ".app"
+    ).innerHTML = `
 
     <div class="quiz-card">
 
         <div class="question-number">
 
-            問題 ${currentQuestion + 1}
-            / ${currentQuiz.length}
+            問題
+            ${currentQuestion + 1}
+            /
+            ${currentQuiz.length}
 
         </div>
 
         <div class="progress">
 
             <div
-                class="progress-fill"
-                style="width:${progress}%">
+            class="progress-fill"
+            style="
+            width:${progress}%">
             </div>
 
         </div>
 
         <img
-            src="img/signs/${q.image}"
-            alt="${q.answer}"
-            class="sign-image">
+        src="img/signs/${q.image}"
+        alt="${q.answer}"
+        class="sign-image">
 
         <h3>
 
@@ -80,18 +104,18 @@ function showQuestion() {
         <div id="result"></div>
 
         <button
-            class="skip-btn"
-            onclick="showAnswer()">
+        class="skip-btn"
+        onclick="showAnswer()">
 
-            ❓ わからない
+        ❓ わからない
 
         </button>
 
         <button
-            class="home-btn"
-            onclick="goHome()">
+        class="home-btn"
+        onclick="goHome()">
 
-            🏠 タイトルへ戻る
+        🏠 タイトルへ戻る
 
         </button>
 
@@ -99,48 +123,72 @@ function showQuestion() {
     `;
 
     const choicesDiv =
-        document.getElementById(
-            "choices"
-        );
+    document.getElementById(
+        "choices"
+    );
 
     const shuffledChoices =
-        shuffle([...q.choices]);
+    shuffle(
+        [...q.choices]
+    );
 
-    shuffledChoices.forEach(choice => {
+    shuffledChoices.forEach(
+        choice => {
 
         const btn =
-            document.createElement(
-                "button"
-            );
+        document.createElement(
+            "button"
+        );
 
         btn.className =
-            "answer-btn";
+        "answer-btn";
 
         btn.textContent =
-            choice;
+        choice;
 
-        btn.onclick = () =>
-            checkAnswer(choice);
+        btn.onclick =
+        () => checkAnswer(
+            choice
+        );
 
-        choicesDiv.appendChild(btn);
+        choicesDiv.appendChild(
+            btn
+        );
+
     });
+
 }
 
-function checkAnswer(answer) {
+function disableButtons(){
+
+    const buttons =
+    document.querySelectorAll(
+        ".answer-btn"
+    );
+
+    buttons.forEach(btn=>{
+
+        btn.disabled = true;
+
+    });
+
+}
+
+function checkAnswer(answer){
 
     const q =
-        currentQuiz[currentQuestion];
+    currentQuiz[currentQuestion];
 
     disableButtons();
 
     const result =
-        document.getElementById(
-            "result"
-        );
+    document.getElementById(
+        "result"
+    );
 
-    if (
+    if(
         answer === q.answer
-    ) {
+    ){
 
         score++;
 
@@ -149,33 +197,38 @@ function checkAnswer(answer) {
         <div class="correct-box">
 
             <h3>
+
             ✅ 正解
+
             </h3>
 
             <p>
+
             ${q.explanation}
+
             </p>
 
             <button
-                class="next-btn"
-                onclick="nextQuestion()">
+            class="next-btn"
+            onclick="nextQuestion()">
 
-                次の問題へ
+            次の問題へ
 
             </button>
 
         </div>
-
         `;
 
-    } else {
+    }else{
 
         result.innerHTML = `
 
         <div class="wrong-box">
 
             <h3>
+
             ❌ 不正解
+
             </h3>
 
             <p>
@@ -188,88 +241,85 @@ function checkAnswer(answer) {
             </p>
 
             <p>
+
             ${q.explanation}
+
             </p>
 
             <button
-                class="next-btn"
-                onclick="nextQuestion()">
+            class="next-btn"
+            onclick="nextQuestion()">
 
-                次の問題へ
+            次の問題へ
 
             </button>
 
         </div>
-
         `;
+
     }
+
 }
 
-function showAnswer() {
+function showAnswer(){
 
     const q =
-        currentQuiz[currentQuestion];
+    currentQuiz[currentQuestion];
 
     disableButtons();
 
-    document.getElementById(
+    document
+    .getElementById(
         "result"
-    ).innerHTML = `
+    )
+    .innerHTML = `
 
     <div class="wrong-box">
 
         <h3>
+
         ❓ わからない
+
         </h3>
 
         <p>
 
         正解：
         <strong>
+
         ${q.answer}
+
         </strong>
 
         </p>
 
         <p>
+
         ${q.explanation}
+
         </p>
 
         <button
-            class="next-btn"
-            onclick="nextQuestion()">
+        class="next-btn"
+        onclick="nextQuestion()">
 
-            次の問題へ
+        次の問題へ
 
         </button>
 
     </div>
-
     `;
+
 }
 
-function disableButtons() {
-
-    const buttons =
-        document.querySelectorAll(
-            ".answer-btn"
-        );
-
-    buttons.forEach(btn => {
-
-        btn.disabled = true;
-
-    });
-}
-
-function nextQuestion() {
+function nextQuestion(){
 
     currentQuestion++;
 
-    if (
+    if(
         currentQuestion >=
         currentQuiz.length
-    ) {
+    ){
 
         showResult();
 
@@ -277,41 +327,42 @@ function nextQuestion() {
     }
 
     showQuestion();
+
 }
 
-function showResult() {
+function showResult(){
 
     const percent =
-        Math.round(
-            score /
-            currentQuiz.length * 100
-        );
+    Math.round(
+
+        score
+        /
+        currentQuiz.length
+
+        * 100
+
+    );
 
     let rank = "C";
-    let message =
-        "もう少し頑張りましょう";
 
-    if (
-        percent >= 95
-    ) {
+    let message =
+    "もう少し頑張りましょう！";
+
+    if(percent >= 95){
 
         rank = "S";
 
         message =
         "素晴らしい！完璧です！";
 
-    } else if (
-        percent >= 85
-    ) {
+    }else if(percent >= 85){
 
         rank = "A";
 
         message =
         "とても良くできました！";
 
-    } else if (
-        percent >= 70
-    ) {
+    }else if(percent >= 70){
 
         rank = "B";
 
@@ -333,36 +384,36 @@ function showResult() {
 
         <div class="result-rank">
 
-            ${rank}
+        ${rank}
 
         </div>
 
         <div class="result-score">
 
-            ${score}
-            /
-            ${currentQuiz.length}
+        ${score}
+        /
+        ${currentQuiz.length}
 
         </div>
 
         <h2>
 
-            正答率
-            ${percent}%
+        正答率
+        ${percent}%
 
         </h2>
 
         <p>
 
-            ${message}
+        ${message}
 
         </p>
 
         <button
-            class="next-btn"
-            onclick="location.reload()">
+        class="next-btn"
+        onclick="location.reload()">
 
-            ホームへ戻る
+        ホームへ戻る
 
         </button>
 
@@ -371,14 +422,32 @@ function showResult() {
     `;
 }
 
-function goHome() {
+function goHome(){
 
-    if (
+    if(
         confirm(
             "タイトルへ戻りますか？"
         )
-    ) {
+    ){
 
         location.reload();
+
     }
+
+}
+
+function showWeakQuestions(){
+
+    alert(
+        "苦手問題機能は今後実装予定です"
+    );
+
+}
+
+function showScore(){
+
+    alert(
+        "成績表示機能は今後実装予定です"
+    );
+
 }
