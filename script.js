@@ -42,14 +42,18 @@ function showQuestion() {
     <div class="quiz-card">
 
         <h2>
-            問題 ${currentQuestion + 1}
-            / ${currentQuiz.length}
+        問題 ${currentQuestion + 1}
+        / ${currentQuiz.length}
         </h2>
 
-        img/signs/${q.image}
+        <img
+            src="img/signs/${q.image}"
+            alt="${q.answer}"
+            class="sign-image"
+        >
 
         <h3>
-            この標識の意味は？
+        この標識の意味は？
         </h3>
 
         <div id="choices"></div>
@@ -80,6 +84,7 @@ function showQuestion() {
         () => checkAnswer(choice);
 
         choicesDiv.appendChild(btn);
+
     });
 }
 
@@ -98,7 +103,7 @@ function checkAnswer(answer) {
         btn.disabled = true;
     });
 
-    if (answer === q.answer) {
+    if(answer === q.answer){
 
         score++;
 
@@ -106,17 +111,19 @@ function checkAnswer(answer) {
 
         <div class="correct-box">
 
-            <h3>✅ 正解</h3>
+            <h3>
+            ✅ 正解
+            </h3>
 
             <p>
             ${q.explanation}
             </p>
 
             <button
-             class="next-btn"
-             onclick="nextQuestion()">
+                class="next-btn"
+                onclick="nextQuestion()">
 
-             次の問題へ
+                次の問題へ
 
             </button>
 
@@ -130,12 +137,14 @@ function checkAnswer(answer) {
 
         <div class="wrong-box">
 
-            <h3>❌ 不正解</h3>
+            <h3>
+            ❌ 不正解
+            </h3>
 
             <p>
             正解：
             <strong>
-                ${q.answer}
+            ${q.answer}
             </strong>
             </p>
 
@@ -144,10 +153,10 @@ function checkAnswer(answer) {
             </p>
 
             <button
-             class="next-btn"
-             onclick="nextQuestion()">
+                class="next-btn"
+                onclick="nextQuestion()">
 
-             次の問題へ
+                次の問題へ
 
             </button>
 
@@ -161,16 +170,18 @@ function nextQuestion() {
 
     currentQuestion++;
 
-    if (
+    if(
         currentQuestion >=
         currentQuiz.length
-    ) {
+    ){
 
         showResult();
+
         return;
     }
 
     showQuestion();
+
 }
 
 function showResult() {
@@ -183,22 +194,26 @@ function showResult() {
     );
 
     let rank = "C";
-    let message = "もう少し頑張りましょう！";
+    let message =
+    "もう少し頑張りましょう";
 
-    if (percent >= 95) {
+    if(percent >= 95){
 
         rank = "S";
-        message = "素晴らしい！完璧です！";
+        message =
+        "素晴らしい！";
 
-    } else if (percent >= 85) {
+    } else if(percent >= 85){
 
         rank = "A";
-        message = "とても良くできました！";
+        message =
+        "とても良くできました";
 
-    } else if (percent >= 70) {
+    } else if(percent >= 70){
 
         rank = "B";
-        message = "合格レベルです！";
+        message =
+        "合格レベルです";
     }
 
     document.querySelector(".app").innerHTML = `
@@ -217,8 +232,7 @@ function showResult() {
         </h2>
 
         <h2>
-        正答率
-        ${percent}%
+        正答率 ${percent}%
         </h2>
 
         <h1>
@@ -230,10 +244,10 @@ function showResult() {
         </p>
 
         <button
-          class="next-btn"
-          onclick="location.reload()">
+            class="next-btn"
+            onclick="location.reload()">
 
-          ホームへ戻る
+            ホームへ戻る
 
         </button>
 
